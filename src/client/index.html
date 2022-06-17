@@ -11,8 +11,8 @@
         console.log('Connected');
       });
 
-      socket.on('message', function () {
-        console.log('test');
+      socket.on('rooms.player.entered', function (data) {
+        console.log('etered', data);
       });
 
       socket.on('disconnect', function () {

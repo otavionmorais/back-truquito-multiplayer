@@ -1,27 +1,26 @@
-import { Match } from '../matches/match.class';
-import { Player } from '../players/player.class';
+import { Errors } from 'src/events/events.constants';
+import { Match } from '../matches/match';
+import { Player } from '../players/player';
 
 export class Room {
-  constructor(
-    private config: {
-      id: string;
-      name: string;
-      players: Player[];
-      maxPlayers: number;
-    },
-  ) {}
+  constructor(private name: string, private maxPlayers: number) {}
 
   private currentMatch: Match;
+  private players: Player[] = [];
 
   public addPlayer(player: Player): void {
     if (this.isFull()) {
-      throw new Error('Room is full');
+      throw new Error(Errors.ROOM_FULL);
     }
-    this.config.players.push(player);
+    this.players.push(player);
+  }
+
+  public removePlayer(player: Player): void {
+    this.players = this.players.filter((p) => p.getId() !== player.getId());
   }
 
   public isFull(): boolean {
-    return this.config.players.length >= this.config.maxPlayers;
+    return this.players.length >= this.maxPlayers;
   }
 
   public createNewMatch(): Match {
@@ -31,5 +30,9 @@ export class Room {
 
   public getCurrentMatch(): Match {
     return this.currentMatch;
+  }
+
+  public getName(): string {
+    return this.name;
   }
 }

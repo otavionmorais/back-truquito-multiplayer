@@ -20,6 +20,7 @@ export class EventsGateway implements OnModuleInit {
     this.server.on('connect', (client) => {
       this.clients[client.id] = true;
       console.log(this.clients);
+      this.server.emit(client.id, { test: 'test' });
     });
 
     this.server.on('connection', (client) => {
