@@ -1,3 +1,4 @@
+import { Errors } from 'src/app.constants';
 import { Match } from '../matches/match';
 import { Room } from '../rooms/room.class';
 
@@ -10,8 +11,11 @@ export class Player {
   private id: string;
 
   public joinRoom(room: Room): void {
-    this.currentRoom = room;
+    if (this.currentRoom) {
+      throw new Error(Errors.PLAYER_ALREADY_IN_ROOM);
+    }
     room.addPlayer(this);
+    this.currentRoom = room;
   }
 
   public getCurrentRoom(): Room | null {

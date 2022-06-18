@@ -1,4 +1,4 @@
-import { Errors } from 'src/events/events.constants';
+import { Errors } from 'src/app.constants';
 import { Match } from '../matches/match';
 import { Player } from '../players/player';
 

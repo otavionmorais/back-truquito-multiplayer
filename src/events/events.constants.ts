@@ -7,12 +7,3 @@ export enum EventsToEmit {
   PLAYER_ENTERED_ROOM = 'rooms.player.entered',
   PLAYER_LEFT_ROOM = 'rooms.player.left',
 }
-
-export const DefaultRules = {
-  maxPlayers: 4,
-};
-
-export enum Errors {
-  ROOM_FULL = 'E01',
-  SOCKET_NOT_FOUND = 'E02',
-}
