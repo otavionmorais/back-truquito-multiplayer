@@ -8,7 +8,6 @@ import { EventsToEmit } from './events.constants';
   cors: {
     origin: '*',
   },
-  pingInterval: 5000,
 })
 export class EventsGateway implements OnModuleInit {
   @WebSocketServer()
