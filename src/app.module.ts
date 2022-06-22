@@ -13,7 +13,6 @@ import { HttpModule } from './http/http.module';
           .valid('development', 'production')
           .default('development'),
         PORT: Joi.number().default(3000),
-        WEBSOCKET_PORT: Joi.number().default(3000),
       }),
     }),
     EventsModule,
