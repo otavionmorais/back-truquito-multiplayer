@@ -35,6 +35,6 @@ export default class Rooms {
   }
 
   public get(name: string): Promise<IRoom | null> {
-    return this.cacheManager.get(`room:${name}`);
+    return this.cacheManager.get(`${Constants.CACHE_ROOM_PREFIX}:${name}`);
   }
 }
