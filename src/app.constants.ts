@@ -7,3 +7,9 @@ export enum Errors {
 export const DefaultRules = {
   maxPlayers: 4,
 };
+
+export const Constants = {
+  CACHE_ROOM_PREFIX: 'room',
+  CACHE_PLAYER_PREFIX: 'player',
+  DEFAULT_TTL: 60 * 60 * 12,
+};
