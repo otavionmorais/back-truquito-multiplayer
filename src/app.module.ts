@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { EventsModule } from './events/events.module';
 import { HttpModule } from './http/http.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { HttpModule } from './http/http.module';
       }),
       global: true,
     },
+    GameModule,
     EventsModule,
     HttpModule,
   ],

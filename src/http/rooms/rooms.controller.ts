@@ -11,22 +11,22 @@ import {
   CLIENT_SOCKET_INSTANCE_KEY,
   EventsToEmit,
 } from 'src/events/events.constants';
-import ConnectedPlayers from 'src/game/players/connected-players';
-import { Player } from 'src/game/players/player';
-import ConnectedRooms from 'src/game/rooms/connected-rooms';
-import { Room } from 'src/game/rooms/room.class';
 import EnterRoomDTO from './dtos/EnterRoomDTO';
 import { IEnterRoomResponse } from './rooms.structures';
 import { EventsGateway } from 'src/events/events.gateway';
 import { DefaultRules, Errors } from 'src/app.constants';
 import { Cache } from 'cache-manager';
-import { Socket } from 'socket.io';
+import Rooms from 'src/game/rooms';
+import Players from 'src/game/players';
+import { joinRoom } from 'src/game/players/players.service';
 
 @Controller('rooms')
 export class RoomsController {
   constructor(
     private eventsGateway: EventsGateway,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private rooms: Rooms,
+    private players: Players,
   ) {}
 
   @Post('enter')
@@ -47,21 +47,27 @@ export class RoomsController {
     }
 
     try {
-      let player = ConnectedPlayers.get(websocketClientId);
-
+      let player = await this.players.get(websocketClientId);
       if (!player) {
-        player = new Player(data.playerName, websocketClientId);
-        ConnectedPlayers.add(player);
+        player = {
+          id: websocketClientId,
+          name: data.playerName,
+        };
+        await this.players.add(player);
       }
 
-      let room = ConnectedRooms.get(data.roomName);
+      let room = await this.rooms.get(data.roomName);
 
       if (!room) {
-        room = new Room(data.roomName, DefaultRules.maxPlayers);
-        ConnectedRooms.add(room);
+        room = {
+          name: data.roomName,
+          players: [],
+          maxPlayers: DefaultRules.maxPlayers,
+        };
+        await this.rooms.add(room);
       }
 
-      player.joinRoom(room);
+      await joinRoom(player, room, this.cacheManager);
 
       this.eventsGateway.server
         .in(websocketClientId)
@@ -69,11 +75,14 @@ export class RoomsController {
 
       this.eventsGateway.server
         .to(data.roomName)
-        .emit(EventsToEmit.PLAYER_ENTERED_ROOM, player.getInfo());
+        .emit(EventsToEmit.PLAYER_ENTERED_ROOM, player);
+
+      const r = await this.rooms.get(data.roomName);
+      console.log(r);
 
       return {
-        room: room.getName(),
-        player: player.getInfo(),
+        room,
+        player,
       };
     } catch (e) {
       throw new HttpException(

@@ -1,5 +1,5 @@
-import { Room } from '../rooms/room.class';
+import { IRoom } from '../rooms/rooms.structures';
 
 export class Match {
-  constructor(private room: Room) {}
+  constructor(private room: IRoom) {}
 }
