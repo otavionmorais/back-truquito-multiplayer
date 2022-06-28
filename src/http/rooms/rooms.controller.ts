@@ -29,7 +29,7 @@ export class RoomsController {
     private players: Players,
   ) {}
 
-  @Post('enter')
+  @Post('join')
   async enterRoom(@Body() data: EnterRoomDTO): Promise<IEnterRoomResponse> {
     const { websocketClientId } = data;
 
@@ -77,9 +77,6 @@ export class RoomsController {
         .to(data.roomName)
         .emit(EventsToEmit.PLAYER_ENTERED_ROOM, player);
 
-      const r = await this.rooms.get(data.roomName);
-      console.log(r);
-
       return {
         room,
         player,
@@ -87,7 +84,7 @@ export class RoomsController {
     } catch (e) {
       throw new HttpException(
         {
-          code: e.message,
+          message: e.message,
         },
         HttpStatus.BAD_REQUEST,
       );
