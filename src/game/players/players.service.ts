@@ -1,19 +1,19 @@
 import { Constants, Errors } from 'src/app.constants';
-import { IRoom } from '../rooms/rooms.structures';
 import { addPlayerToRoom, removePlayerFromRoom } from '../rooms/rooms.service';
 import { IPlayer } from './players.structures';
 import { Cache } from 'cache-manager';
+import { IRoom } from '../rooms/rooms.structures';
 
 export async function joinRoom(
   player: IPlayer,
   room: IRoom,
   cacheManager: Cache,
 ): Promise<void> {
-  if (player.currentRoom) {
+  if (player.roomName) {
     throw new Error(Errors.PLAYER_ALREADY_IN_ROOM);
   }
   await addPlayerToRoom(room, player.id, cacheManager);
-  player.currentRoom = room;
+  player.roomName = room.name;
   await cacheManager.set(
     `${Constants.CACHE_PLAYER_PREFIX}:${player.id}`,
     player,
@@ -29,7 +29,7 @@ export async function leaveRoom(
   cacheManager: Cache,
 ): Promise<void> {
   await removePlayerFromRoom(room, player.id, cacheManager);
-  player.currentRoom = null;
+  player.roomName = undefined;
   await cacheManager.set(
     `${Constants.CACHE_PLAYER_PREFIX}:${player.id}`,
     player,

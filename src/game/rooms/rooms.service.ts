@@ -34,8 +34,19 @@ export function isRoomFull(room: IRoom): boolean {
   return room.players.length >= room.maxPlayers;
 }
 
+export function getRoomNumberOfPlayers(room: IRoom): number {
+  return room.players.length;
+}
+
 export function playerExistsInRoom(room: IRoom, playerId: string): boolean {
   return room.players.includes(playerId);
+}
+
+export function getRoomByName(
+  roomName: string,
+  cacheManager: Cache,
+): Promise<IRoom | null> {
+  return cacheManager.get(`${Constants.CACHE_ROOM_PREFIX}:${roomName}`);
 }
 
 // export async function createNewMatch(

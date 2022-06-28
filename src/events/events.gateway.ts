@@ -4,6 +4,12 @@ import { Cache } from 'cache-manager';
 import { Server } from 'socket.io';
 import { Constants } from 'src/app.constants';
 import Players from 'src/game/players';
+import Rooms from 'src/game/rooms';
+import {
+  getRoomByName,
+  getRoomNumberOfPlayers,
+  removePlayerFromRoom,
+} from 'src/game/rooms/rooms.service';
 import { CLIENT_SOCKET_INSTANCE_KEY, EventsToEmit } from './events.constants';
 
 @WebSocketGateway({
@@ -18,6 +24,7 @@ export class EventsGateway implements OnModuleInit {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private players: Players,
+    private rooms: Rooms,
   ) {}
 
   onModuleInit() {
@@ -32,12 +39,24 @@ export class EventsGateway implements OnModuleInit {
       client.on('disconnect', async () => {
         await this.cacheManager.del(CLIENT_SOCKET_INSTANCE_KEY(client.id));
         const player = await this.players.get(client.id);
+
         if (player) {
           await this.players.remove(client.id);
-          if (player) {
-            this.server
-              .to(player.currentRoom.name)
-              .emit(EventsToEmit.PLAYER_LEFT_ROOM, player);
+          if (player.roomName) {
+            const room = await getRoomByName(
+              player.roomName,
+              this.cacheManager,
+            );
+
+            if (!room) {
+              return;
+            }
+
+            await removePlayerFromRoom(room, client.id, this.cacheManager);
+
+            if (!getRoomNumberOfPlayers(room)) {
+              await this.rooms.remove(room.name);
+            }
           }
         }
       });
