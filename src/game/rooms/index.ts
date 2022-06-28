@@ -17,8 +17,8 @@ export default class Rooms {
     );
   }
 
-  public async remove(room: IRoom): Promise<void> {
-    await this.cacheManager.del(`room:${room.name}`);
+  public async remove(roomName: string): Promise<void> {
+    await this.cacheManager.del(`${Constants.CACHE_ROOM_PREFIX}:${roomName}`);
   }
 
   public async getAllNames(): Promise<string[]> {
