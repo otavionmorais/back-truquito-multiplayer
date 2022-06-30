@@ -12,7 +12,7 @@ export async function joinRoom(
   if (player.roomName) {
     throw new Error(Errors.PLAYER_ALREADY_IN_ROOM);
   }
-  await addPlayerToRoom(room, player.id, cacheManager);
+  await addPlayerToRoom(room, player, cacheManager);
   player.roomName = room.name;
   await cacheManager.set(
     `${Constants.CACHE_PLAYER_PREFIX}:${player.id}`,

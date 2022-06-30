@@ -54,6 +54,10 @@ export class EventsGateway implements OnModuleInit {
 
             await removePlayerFromRoom(room, client.id, this.cacheManager);
 
+            this.server
+              .to(room.name)
+              .emit(EventsToEmit.PLAYER_LEFT_ROOM, player);
+
             if (!getRoomNumberOfPlayers(room)) {
               await this.rooms.remove(room.name);
             }

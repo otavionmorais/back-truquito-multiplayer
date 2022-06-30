@@ -1,6 +1,8 @@
+import { IPlayer } from '../players/players.structures';
+
 export interface IRoom {
   name: string;
   maxPlayers: number;
-  players: string[];
+  players: IPlayer[];
   // currentMatch: IMatch | null;
 }

@@ -1,19 +1,20 @@
 import { Cache } from 'cache-manager';
 import { Constants, Errors } from 'src/app.constants';
+import { IPlayer } from '../players/players.structures';
 import { IRoom } from './rooms.structures';
 
 export async function addPlayerToRoom(
   room: IRoom,
-  playerId: string,
+  player: IPlayer,
   cacheManager: Cache,
 ): Promise<void> {
   if (isRoomFull(room)) {
     throw new Error(Errors.ROOM_FULL);
   }
-  if (playerExistsInRoom(room, playerId)) {
+  if (playerExistsInRoom(room, player.id)) {
     throw new Error(Errors.PLAYER_ALREADY_IN_ROOM);
   }
-  room.players.push(playerId);
+  room.players.push(player);
   await cacheManager.set(`${Constants.CACHE_ROOM_PREFIX}:${room.name}`, room, {
     ttl: Constants.DEFAULT_TTL,
   });
@@ -24,7 +25,7 @@ export async function removePlayerFromRoom(
   playerId: string,
   cacheManager: Cache,
 ): Promise<void> {
-  room.players = room.players.filter((p) => p !== playerId);
+  room.players = room.players.filter((p) => p.id !== playerId);
   await cacheManager.set(`${Constants.CACHE_ROOM_PREFIX}:${room.name}`, room, {
     ttl: Constants.DEFAULT_TTL,
   });
@@ -39,7 +40,7 @@ export function getRoomNumberOfPlayers(room: IRoom): number {
 }
 
 export function playerExistsInRoom(room: IRoom, playerId: string): boolean {
-  return room.players.includes(playerId);
+  return !!room.players.find((p) => p.id === playerId);
 }
 
 export function getRoomByName(
