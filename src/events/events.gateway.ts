@@ -30,9 +30,7 @@ export class EventsGateway implements OnModuleInit {
   onModuleInit() {
     this.server.on('connect', (client) => {
       console.log(client.id);
-      this.cacheManager.set(CLIENT_SOCKET_INSTANCE_KEY(client.id), true, {
-        ttl: Constants.DEFAULT_TTL,
-      });
+      this.cacheManager.set(CLIENT_SOCKET_INSTANCE_KEY(client.id), true);
     });
 
     this.server.on('connection', (client) => {

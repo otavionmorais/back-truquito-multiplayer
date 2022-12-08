@@ -17,9 +17,6 @@ export async function joinRoom(
   await cacheManager.set(
     `${Constants.CACHE_PLAYER_PREFIX}:${player.id}`,
     player,
-    {
-      ttl: Constants.DEFAULT_TTL,
-    },
   );
 }
 
@@ -33,8 +30,5 @@ export async function leaveRoom(
   await cacheManager.set(
     `${Constants.CACHE_PLAYER_PREFIX}:${player.id}`,
     player,
-    {
-      ttl: Constants.DEFAULT_TTL,
-    },
   );
 }

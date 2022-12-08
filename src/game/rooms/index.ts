@@ -11,9 +11,6 @@ export default class Rooms {
     await this.cacheManager.set(
       `${Constants.CACHE_ROOM_PREFIX}:${room.name}`,
       room,
-      {
-        ttl: Constants.DEFAULT_TTL,
-      },
     );
   }
 

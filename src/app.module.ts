@@ -1,11 +1,11 @@
-import { CacheModule, Module } from '@nestjs/common';
-import type { ClientOpts } from 'redis';
-import * as redisStore from 'cache-manager-redis-store';
+import { CacheModule, CacheStore, Module } from '@nestjs/common';
+import { redisStore } from 'cache-manager-redis-store';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { EventsModule } from './events/events.module';
 import { HttpModule } from './http/http.module';
 import { GameModule } from './game/game.module';
+import { Constants } from './app.constants';
 
 @Module({
   imports: [
@@ -21,10 +21,20 @@ import { GameModule } from './game/game.module';
       }),
     }),
     {
-      ...CacheModule.register<ClientOpts>({
-        store: redisStore,
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
+      ...CacheModule.registerAsync({
+        useFactory: async () => {
+          const store = (await redisStore({
+            socket: {
+              host: process.env.REDIS_HOST,
+              port: +process.env.REDIS_PORT,
+            },
+          })) as unknown as CacheStore;
+
+          return {
+            store,
+            ttl: Constants.DEFAULT_TTL,
+          };
+        },
       }),
       global: true,
     },
