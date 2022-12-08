@@ -15,9 +15,7 @@ export async function addPlayerToRoom(
     throw new Error(Errors.PLAYER_ALREADY_IN_ROOM);
   }
   room.players.push(player);
-  await cacheManager.set(`${Constants.CACHE_ROOM_PREFIX}:${room.name}`, room, {
-    ttl: Constants.DEFAULT_TTL,
-  });
+  await cacheManager.set(`${Constants.CACHE_ROOM_PREFIX}:${room.name}`, room);
 }
 
 export async function removePlayerFromRoom(
@@ -26,9 +24,7 @@ export async function removePlayerFromRoom(
   cacheManager: Cache,
 ): Promise<void> {
   room.players = room.players.filter((p) => p.id !== playerId);
-  await cacheManager.set(`${Constants.CACHE_ROOM_PREFIX}:${room.name}`, room, {
-    ttl: Constants.DEFAULT_TTL,
-  });
+  await cacheManager.set(`${Constants.CACHE_ROOM_PREFIX}:${room.name}`, room);
 }
 
 export function isRoomFull(room: IRoom): boolean {
