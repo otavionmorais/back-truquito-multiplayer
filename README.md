@@ -1,5 +1,3 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Descontinuado - será feito em Elixir no repositório https://github.com/otavionmorais/truquito-backend-elixir
 
-# Work in progress...
+
